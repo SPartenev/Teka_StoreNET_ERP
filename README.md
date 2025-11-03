@@ -71,7 +71,7 @@ Teka_StoreNET_ERP/
 - [Tables Inventory (JSON)](analysis/week1/database/tables-data.json)
 - [Tables Overview (MD)](analysis/week1/database/tables-report.md)
 - [Relationships Analysis (JSON)](analysis/week1/database/relationships.json)
-- [ERD Diagram (Mermaid)](analysis/week1/database/erd-diagram.mermaid)
+- [ERD Diagram (Mermaid)](analysis/week1/database/database_erd-diagram.mermaid)
 - [Relationships Documentation](analysis/week1/database/relationships-overview.md)
 
 ### Implementation Plans
@@ -98,5 +98,5 @@ This is a private repository for the Teka Store.NET modernization project. All a
 
 ---
 
-**Last Updated:** 2025-11-03  
+**Last Updated:** 2025-02-04  
 **Current Task:** TASK 1.2 Complete ✅ → TASK 1.3 Next
