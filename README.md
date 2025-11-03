@@ -57,9 +57,9 @@ Teka_StoreNET_ERP/
 
 ## 🔗 Key Documents
 
-- [Детайлен план за изпълнение](./IMPLEMENTATION/Детайлен план за изпълнение.pdf)
-- [Detailed Implementation Plan](./IMPLEMENTATION/DETAILED IMPLEMENTATION PLAN04092025.pdf)
-- [Database Tables Report](./analysis/week1/database/tables-report.md)
+- [Детайлен план за изпълнение](https://github.com/SPartenev/Teka_StoreNET_ERP/raw/main/IMPLEMENTATION/%D0%94%D0%B5%D1%82%D0%B0%D0%B9%D0%BB%D0%B5%D0%BD%20%D0%BF%D0%BB%D0%B0%D0%BD%20%D0%B7%D0%B0%20%D0%B8%D0%B7%D0%BF%D1%8A%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5.pdf)
+- [Detailed Implementation Plan](https://github.com/SPartenev/Teka_StoreNET_ERP/raw/main/IMPLEMENTATION/DETAILED%20IMPLEMENTATION%20PLAN04092025.pdf)
+- [Database Tables Report](analysis/week1/database/tables-report.md)
 
 ## 👥 Team
 
