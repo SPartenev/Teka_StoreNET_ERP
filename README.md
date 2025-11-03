@@ -28,6 +28,9 @@ Teka_StoreNET_ERP/
 │       └── database/
 │           ├── tables-data.json       # Machine-readable tables inventory
 │           └── tables-report.md       # Human-readable overview
+├── IMPLEMENTATION/
+│   ├── Детайлен план за изпълнение.pdf
+│   └── DETAILED IMPLEMENTATION PLAN04092025.pdf
 ├── docs/                              # (Coming soon)
 └── README.md
 ```
@@ -54,8 +57,8 @@ Teka_StoreNET_ERP/
 
 ## 🔗 Key Documents
 
-- [Детайлен план за изпълнение](./Детайлен план за изпълнение.pdf)
-- [Detailed Implementation Plan](./DETAILED IMPLEMENTATION PLAN04092025.pdf)
+- [Детайлен план за изпълнение](./IMPLEMENTATION/Детайлен план за изпълнение.pdf)
+- [Detailed Implementation Plan](./IMPLEMENTATION/DETAILED IMPLEMENTATION PLAN04092025.pdf)
 - [Database Tables Report](./analysis/week1/database/tables-report.md)
 
 ## 👥 Team
