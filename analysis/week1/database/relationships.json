@@ -1,0 +1,496 @@
+{
+  "extraction_date": "2025-11-03",
+  "database": "TEKA",
+  "total_relationships": 45,
+  "relationship_types": {
+    "one_to_many": 35,
+    "many_to_many": 4,
+    "one_to_one": 6
+  },
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "Prices",
+      "foreign_key": "FK_Prices_Product",
+      "cardinality": "1:N",
+      "description": "Product can have multiple prices (per price type)",
+      "indexed": true,
+      "unique_constraint": ["Product", "PriceType"]
+    },
+    {
+      "id": "REL-002",
+      "type": "one_to_many",
+      "parent_table": "ProductGroups",
+      "child_table": "Products",
+      "foreign_key": "FK_Products_Category",
+      "cardinality": "1:N",
+      "description": "Product belongs to one category/group",
+      "indexed": true
+    },
+    {
+      "id": "REL-003",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "StoreItems",
+      "foreign_key": "FK_StoreItems_Product",
+      "cardinality": "1:N",
+      "description": "Product quantity tracked per store",
+      "indexed": true,
+      "unique_constraint": ["Store", "Product"]
+    },
+    {
+      "id": "REL-004",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "StoreItems",
+      "foreign_key": "FK_StoreItems_Store",
+      "cardinality": "1:N",
+      "description": "Store contains multiple product items",
+      "indexed": true,
+      "unique_constraint": ["Store", "Product"]
+    },
+    {
+      "id": "REL-005",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Documents",
+      "foreign_key": "FK_Documents_Store",
+      "cardinality": "1:N",
+      "description": "Document issued in a specific store",
+      "indexed": true
+    },
+    {
+      "id": "REL-006",
+      "type": "one_to_many",
+      "parent_table": "DocumentsTypes",
+      "child_table": "Documents",
+      "foreign_key": "FK_Documents_DocumentType",
+      "cardinality": "1:N",
+      "description": "Document has a specific type",
+      "indexed": true
+    },
+    {
+      "id": "REL-007",
+      "type": "one_to_many",
+      "parent_table": "Documents",
+      "child_table": "DocumentsOperations",
+      "foreign_key": "FK_DocumentsOperations_Document",
+      "cardinality": "1:N",
+      "description": "Document contains multiple operations",
+      "indexed": true
+    },
+    {
+      "id": "REL-008",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "DocumentsOperations",
+      "foreign_key": "FK_DocumentsOperations_Product",
+      "cardinality": "1:N",
+      "description": "Document operation references a product",
+      "indexed": true
+    },
+    {
+      "id": "REL-009",
+      "type": "one_to_many",
+      "parent_table": "Contractors",
+      "child_table": "Documents",
+      "foreign_key": "FK_Documents_Contractor",
+      "cardinality": "1:N",
+      "description": "Document associated with contractor",
+      "indexed": true,
+      "nullable": true
+    },
+    {
+      "id": "REL-010",
+      "type": "one_to_many",
+      "parent_table": "Contractors",
+      "child_table": "Products",
+      "foreign_key": "FK_Products_Supplier",
+      "cardinality": "1:N",
+      "description": "Product has default supplier",
+      "indexed": false,
+      "nullable": true
+    },
+    {
+      "id": "REL-011",
+      "type": "many_to_many",
+      "table1": "Contractors",
+      "table2": "Products",
+      "junction_table": "ProductDiscounts",
+      "description": "Product-specific discounts per contractor",
+      "unique_constraint": ["Contractor", "Product"]
+    },
+    {
+      "id": "REL-012",
+      "type": "many_to_many",
+      "table1": "Contractors",
+      "table2": "ProductGroups",
+      "junction_table": "CategoryDiscounts",
+      "description": "Category-level discounts per contractor",
+      "unique_constraint": ["Contractor", "Category"]
+    },
+    {
+      "id": "REL-013",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Transfers",
+      "foreign_key": "FK_Transfers_SourceStore",
+      "cardinality": "1:N",
+      "description": "Transfer from source store",
+      "indexed": true
+    },
+    {
+      "id": "REL-014",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Transfers",
+      "foreign_key": "FK_Transfers_DestinationStore",
+      "cardinality": "1:N",
+      "description": "Transfer to destination store",
+      "indexed": true
+    },
+    {
+      "id": "REL-015",
+      "type": "one_to_many",
+      "parent_table": "Transfers",
+      "child_table": "TransferItems",
+      "foreign_key": "FK_TransferItems_Transfer",
+      "cardinality": "1:N",
+      "description": "Transfer contains multiple items",
+      "indexed": true
+    },
+    {
+      "id": "REL-016",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "TransferItems",
+      "foreign_key": "FK_TransferItems_Product",
+      "cardinality": "1:N",
+      "description": "Transfer item references product",
+      "indexed": true
+    },
+    {
+      "id": "REL-017",
+      "type": "one_to_one",
+      "parent_table": "Products",
+      "child_table": "AssemblySchemes",
+      "foreign_key": "FK_AssemblySchemes_Product",
+      "cardinality": "1:1",
+      "description": "Composite product has assembly template",
+      "indexed": true
+    },
+    {
+      "id": "REL-018",
+      "type": "one_to_many",
+      "parent_table": "AssemblySchemes",
+      "child_table": "AssemblySchemeItems",
+      "foreign_key": "FK_AssemblySchemeItems_Template",
+      "cardinality": "1:N",
+      "description": "Assembly template contains parts",
+      "indexed": true
+    },
+    {
+      "id": "REL-019",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "AssemblySchemeItems",
+      "foreign_key": "FK_AssemblySchemeItems_Product",
+      "cardinality": "1:N",
+      "description": "Assembly item references part product",
+      "indexed": true
+    },
+    {
+      "id": "REL-020",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Assemblies",
+      "foreign_key": "FK_Assemblies_Store",
+      "cardinality": "1:N",
+      "description": "Assembly performed in store",
+      "indexed": true
+    },
+    {
+      "id": "REL-021",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "Assemblies",
+      "foreign_key": "FK_Assemblies_Product",
+      "cardinality": "1:N",
+      "description": "Assembly creates product",
+      "indexed": true
+    },
+    {
+      "id": "REL-022",
+      "type": "one_to_many",
+      "parent_table": "Assemblies",
+      "child_table": "AssemblyItems",
+      "foreign_key": "FK_AssemblyItems_Assembly",
+      "cardinality": "1:N",
+      "description": "Assembly consumes parts",
+      "indexed": true
+    },
+    {
+      "id": "REL-023",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Rejections",
+      "foreign_key": "FK_Rejections_Store",
+      "cardinality": "1:N",
+      "description": "Product rejection in store",
+      "indexed": true
+    },
+    {
+      "id": "REL-024",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "Rejections",
+      "foreign_key": "FK_Rejections_Product",
+      "cardinality": "1:N",
+      "description": "Rejection of specific product",
+      "indexed": true
+    },
+    {
+      "id": "REL-025",
+      "type": "one_to_many",
+      "parent_table": "Stores",
+      "child_table": "Initiations",
+      "foreign_key": "FK_Initiations_Store",
+      "cardinality": "1:N",
+      "description": "Initial store inventory",
+      "indexed": true
+    },
+    {
+      "id": "REL-026",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "InitiationItems",
+      "foreign_key": "FK_InitiationItems_Product",
+      "cardinality": "1:N",
+      "description": "Initial quantity per product",
+      "indexed": true,
+      "unique_constraint": ["Store", "Product"]
+    },
+    {
+      "id": "REL-027",
+      "type": "one_to_many",
+      "parent_table": "Invoices",
+      "child_table": "InvoiceItems",
+      "foreign_key": "FK_InvoiceItems_Invoice",
+      "cardinality": "1:N",
+      "description": "Invoice contains line items",
+      "indexed": true
+    },
+    {
+      "id": "REL-028",
+      "type": "one_to_many",
+      "parent_table": "Products",
+      "child_table": "InvoiceItems",
+      "foreign_key": "FK_InvoiceItems_Product",
+      "cardinality": "1:N",
+      "description": "Invoice item for product",
+      "indexed": true
+    },
+    {
+      "id": "REL-029",
+      "type": "one_to_many",
+      "parent_table": "InvoiceTypes",
+      "child_table": "Invoices",
+      "foreign_key": "FK_Invoices_InvoiceType",
+      "cardinality": "1:N",
+      "description": "Invoice of specific type",
+      "indexed": true
+    },
+    {
+      "id": "REL-030",
+      "type": "one_to_many",
+      "parent_table": "Contractors",
+      "child_table": "Invoices",
+      "foreign_key": "FK_Invoices_Contractor",
+      "cardinality": "1:N",
+      "description": "Invoice for contractor",
+      "indexed": true
+    },
+    {
+      "id": "REL-031",
+      "type": "one_to_many",
+      "parent_table": "Currencies",
+      "child_table": "CashOperations",
+      "foreign_key": "FK_CashOperations_Currency",
+      "cardinality": "1:N",
+      "description": "Cash operation in currency",
+      "indexed": true
+    },
+    {
+      "id": "REL-032",
+      "type": "one_to_many",
+      "parent_table": "CashTypes",
+      "child_table": "CashOperations",
+      "foreign_key": "FK_CashOperations_CashType",
+      "cardinality": "1:N",
+      "description": "Cash operation of specific type",
+      "indexed": true
+    },
+    {
+      "id": "REL-033",
+      "type": "one_to_many",
+      "parent_table": "Currencies",
+      "child_table": "CurrenciesRates",
+      "foreign_key": "FK_CurrenciesRates_Currency",
+      "cardinality": "1:N",
+      "description": "Exchange rates for currency",
+      "indexed": true
+    },
+    {
+      "id": "REL-034",
+      "type": "many_to_many",
+      "table1": "Users",
+      "table2": "Roles",
+      "junction_table": "UserRoles",
+      "description": "User-role assignment",
+      "unique_constraint": ["User", "Role"]
+    },
+    {
+      "id": "REL-035",
+      "type": "many_to_many",
+      "table1": "Users",
+      "table2": "Rights",
+      "junction_table": "UserRights",
+      "description": "Direct user permissions",
+      "unique_constraint": ["User", "Right"]
+    },
+    {
+      "id": "REL-036",
+      "type": "many_to_many",
+      "table1": "Roles",
+      "table2": "Rights",
+      "junction_table": "RoleRights",
+      "description": "Role permissions",
+      "unique_constraint": ["Role", "Right"]
+    },
+    {
+      "id": "REL-037",
+      "type": "one_to_many",
+      "parent_table": "Users",
+      "child_table": "Messages",
+      "foreign_key": "FK_Messages_Sender",
+      "cardinality": "1:N",
+      "description": "Message from sender",
+      "indexed": true
+    },
+    {
+      "id": "REL-038",
+      "type": "one_to_many",
+      "parent_table": "Messages",
+      "child_table": "MessageRecipients",
+      "foreign_key": "FK_MessageRecipients_Message",
+      "cardinality": "1:N",
+      "description": "Message has recipients",
+      "indexed": true
+    },
+    {
+      "id": "REL-039",
+      "type": "one_to_many",
+      "parent_table": "Users",
+      "child_table": "MessageRecipients",
+      "foreign_key": "FK_MessageRecipients_Recipient",
+      "cardinality": "1:N",
+      "description": "Recipient of message",
+      "indexed": true
+    },
+    {
+      "id": "REL-040",
+      "type": "one_to_many",
+      "parent_table": "Messages",
+      "child_table": "MessageAttachments",
+      "foreign_key": "FK_MessageAttachments_Message",
+      "cardinality": "1:N",
+      "description": "Message with attachments",
+      "indexed": true
+    },
+    {
+      "id": "REL-041",
+      "type": "one_to_many",
+      "parent_table": "Users",
+      "child_table": "Chat",
+      "foreign_key": "FK_Chat_Sender",
+      "cardinality": "1:N",
+      "description": "Chat message from user",
+      "indexed": true
+    },
+    {
+      "id": "REL-042",
+      "type": "one_to_many",
+      "parent_table": "Users",
+      "child_table": "SecurityLog",
+      "foreign_key": "FK_SecurityLog_User",
+      "cardinality": "1:N",
+      "description": "Security events for user",
+      "indexed": true
+    },
+    {
+      "id": "REL-043",
+      "type": "one_to_many",
+      "parent_table": "Users",
+      "child_table": "LoggedUsers",
+      "foreign_key": "FK_LoggedUsers_User",
+      "cardinality": "1:N",
+      "description": "Active user sessions",
+      "indexed": true
+    },
+    {
+      "id": "REL-044",
+      "type": "one_to_one",
+      "parent_table": "Users",
+      "child_table": "Stores",
+      "foreign_key": "FK_Users_DefaultStore",
+      "cardinality": "1:1",
+      "description": "User's default store",
+      "indexed": false,
+      "nullable": true
+    },
+    {
+      "id": "REL-045",
+      "type": "one_to_one",
+      "parent_table": "Stores",
+      "child_table": "CompanyIdentities",
+      "foreign_key": "FK_Stores_Identity",
+      "cardinality": "1:1",
+      "description": "Store's company identity",
+      "indexed": false,
+      "nullable": true
+    }
+  ],
+  "key_findings": {
+    "complex_relationships": [
+      "Products -> Prices (1:N with unique constraint on Product+PriceType)",
+      "Contractors <-> Products (M:N via ProductDiscounts)",
+      "Stores <-> Products (M:N via StoreItems with quantity tracking)",
+      "Products -> AssemblySchemes -> Parts (composite products)"
+    ],
+    "circular_dependencies": [
+      "Products -> AssemblySchemes -> AssemblySchemeItems -> Products (for composite products)"
+    ],
+    "cascade_implications": [
+      "Removing Product affects: Prices, StoreItems, DocumentOperations, InvoiceItems, Assemblies",
+      "Removing Store affects: StoreItems, Documents, Transfers, Assemblies",
+      "Removing Contractor affects: Documents, Invoices, ProductDiscounts"
+    ]
+  },
+  "migration_notes": {
+    "postgresql_considerations": [
+      "Convert IDENTITY columns to SERIAL/BIGSERIAL",
+      "Replace SQL Server DATETIME with TIMESTAMP",
+      "Review TEXT/IMAGE columns -> BYTEA/TEXT",
+      "Verify index strategies (clustered vs non-clustered)",
+      "Check constraint names (PostgreSQL limits to 63 chars)"
+    ],
+    "data_integrity": [
+      "Preserve all foreign key constraints",
+      "Maintain unique constraints on junction tables",
+      "Verify cascading delete rules",
+      "Check nullable vs NOT NULL consistency"
+    ]
+  }
+}

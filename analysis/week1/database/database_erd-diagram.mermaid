@@ -1,0 +1,191 @@
+erDiagram
+    %% CORE BUSINESS ENTITIES
+    ProductGroups ||--o{ Products : "categorizes"
+    Products ||--o{ Prices : "has"
+    Products }o--|| MeasureUnits : "measured in"
+    Products }o--o| Contractors : "supplied by"
+    
+    %% PRODUCT PRICING & DISCOUNTS
+    Products ||--o{ ProductDiscounts : "has discounts"
+    Contractors ||--o{ ProductDiscounts : "receives discounts"
+    ProductGroups ||--o{ CategoryDiscounts : "has discounts"
+    Contractors ||--o{ CategoryDiscounts : "receives discounts"
+    PriceGroups ||--o{ Prices : "defines"
+    
+    %% WAREHOUSE & INVENTORY
+    Stores ||--o{ StoreItems : "contains"
+    Products ||--o{ StoreItems : "stored in"
+    Stores ||--o{ StoreLogItems : "tracks history"
+    Products ||--o{ StoreLogItems : "quantity changes"
+    Stores ||--o{ InitiationItems : "initial inventory"
+    Products ||--o{ InitiationItems : "initial quantity"
+    
+    %% TRANSFERS
+    Stores ||--o{ Transfers : "source"
+    Stores ||--o{ Transfers : "destination"
+    Transfers ||--o{ TransferItems : "contains"
+    Products ||--o{ TransferItems : "transferred"
+    
+    %% COMPOSITE PRODUCTS (ASSEMBLY)
+    Products ||--o| AssemblySchemes : "has template"
+    AssemblySchemes ||--o{ AssemblySchemeItems : "consists of"
+    Products ||--o{ AssemblySchemeItems : "used as part"
+    Stores ||--o{ Assemblies : "assembled in"
+    Products ||--o{ Assemblies : "creates"
+    Assemblies ||--o{ AssemblyItems : "consumes"
+    
+    %% REJECTIONS (WASTE/DAMAGE)
+    Stores ||--o{ Rejections : "discards from"
+    Products ||--o{ Rejections : "rejected"
+    
+    %% DOCUMENTS & OPERATIONS
+    DocumentsTypes ||--o{ Documents : "defines type"
+    Stores ||--o{ Documents : "issued in"
+    Contractors ||--o{ Documents : "involves"
+    Documents ||--o{ DocumentsOperations : "contains"
+    Products ||--o{ DocumentsOperations : "operates on"
+    
+    %% INVOICES
+    InvoiceTypes ||--o{ Invoices : "defines type"
+    Contractors ||--o{ Invoices : "billed to"
+    Invoices ||--o{ InvoiceItems : "contains"
+    Products ||--o{ InvoiceItems : "line item"
+    Documents ||--o{ Invoices : "generates"
+    
+    %% FINANCIAL
+    Currencies ||--o{ CurrenciesRates : "exchange rates"
+    Currencies ||--o{ CashOperations : "in currency"
+    CashTypes ||--o{ CashOperations : "operation type"
+    Stores ||--o{ CashOperations : "performed in"
+    PaymentTypes ||--o{ CashOperations : "payment method"
+    
+    %% SECURITY
+    Users ||--o{ UserRoles : "assigned"
+    Roles ||--o{ UserRoles : "contains"
+    Users ||--o{ UserRights : "has permissions"
+    Rights ||--o{ UserRights : "granted to"
+    Roles ||--o{ RoleRights : "has permissions"
+    Rights ||--o{ RoleRights : "granted to"
+    Users }o--o| Stores : "default store"
+    Stores ||--o{ UserStores : "accessible by"
+    Users ||--o{ UserStores : "can access"
+    
+    %% MESSAGING
+    Users ||--o{ Messages : "sends"
+    Messages ||--o{ MessageRecipients : "sent to"
+    Users ||--o{ MessageRecipients : "receives"
+    Messages ||--o{ MessageAttachments : "has files"
+    Users ||--o{ Chat : "posts"
+    Users ||--o{ Notifications : "receives"
+    
+    %% LOGGING & AUDIT
+    Users ||--o{ SecurityLog : "tracked"
+    Users ||--o{ LoggedUsers : "active sessions"
+    SystemLog ||--o{ AuditLog : "detailed audit"
+    
+    %% SYSTEM CONFIGURATION
+    CompanyIdentities ||--o{ Stores : "operates"
+    Settings ||--o{ SystemLog : "configuration changes"
+
+    %% ENTITY DEFINITIONS
+    Products {
+        bigint ID PK
+        string ProductId UK
+        string Name
+        bigint Category FK
+        bigint MeasureUnit FK
+        bigint Supplier FK
+        decimal PrimeCost
+        bool Active
+        bool IsComposite
+        byte_array ImageData
+    }
+
+    ProductGroups {
+        bigint ID PK
+        string Name UK
+        string Description
+        bool Active
+    }
+
+    Contractors {
+        bigint ID PK
+        string ContractorId UK
+        string Name
+        string Description
+        bool Active
+        double Discount
+    }
+
+    Stores {
+        bigint ID PK
+        string Name UK
+        string Description
+        bool Active
+        bool IsInternal
+        bool IsInitiated
+        bigint Identity FK
+    }
+
+    StoreItems {
+        bigint ID PK
+        bigint Store FK
+        bigint Product FK
+        decimal Quantity
+    }
+
+    Documents {
+        bigint ID PK
+        string DocumentId
+        bigint DocumentType FK
+        bigint Store FK
+        bigint Contractor FK
+        datetime Date
+    }
+
+    Invoices {
+        bigint ID PK
+        bigint InvoiceType FK
+        bigint Contractor FK
+        string InvoiceNumber
+        datetime Date
+        decimal TotalAmount
+    }
+
+    Users {
+        bigint ID PK
+        string Username UK
+        string Password
+        string FirstName
+        string LastName
+        string Email
+        bigint Store FK
+        bool Active
+    }
+
+    Roles {
+        bigint ID PK
+        string Name UK
+        string Description
+    }
+
+    Rights {
+        bigint ID PK
+        string Name UK
+        string Description
+    }
+
+    Currencies {
+        bigint ID PK
+        string Code UK
+        string Name
+        bool IsBase
+    }
+
+    Messages {
+        bigint ID PK
+        bigint Sender FK
+        string Subject
+        text Body
+        datetime SentDate
+    }

@@ -1,5 +1,3 @@
-# Teka Store.NET ERP - Modernization Project
-
 ## 🎯 Project Overview
 
 Migration of Store.NET ERP system from legacy stack to modern architecture.
