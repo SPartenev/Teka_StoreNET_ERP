@@ -54,7 +54,8 @@ Teka_StoreNET_ERP/
 
 ## 🔗 Key Documents
 
-- [Modernization Plan (6 months)](./PLAN_04092025.docx)
+- [Детайлен план за изпълнение](./Детайлен план за изпълнение.pdf)
+- [Detailed Implementation Plan](./DETAILED IMPLEMENTATION PLAN04092025.pdf)
 - [Database Tables Report](./analysis/week1/database/tables-report.md)
 
 ## 👥 Team
