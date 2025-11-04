@@ -1,0 +1,168 @@
+-- QUERY 1: Complete doProduct Table Schema
+-- ============================================================
+
+1	ID	bigint	NULL	19	0	NO	((0))	PRIMARY KEY
+2	Category	bigint	NULL	19	0	NO	((0))	
+3	ProductId	nvarchar	80	NULL	NULL	NO	('')	
+4	Name	nvarchar	80	NULL	NULL	NO	('')	
+5	Annotation	nvarchar	100	NULL	NULL	YES	(NULL)	
+6	AnnotationOne	nvarchar	100	NULL	NULL	YES	(NULL)	
+7	AnnotationTwo	nvarchar	100	NULL	NULL	YES	(NULL)	
+8	Description	nvarchar	500	NULL	NULL	YES	(NULL)	
+9	DescriptionOne	nvarchar	1000	NULL	NULL	YES	(NULL)	
+10	DescriptionTwo	nvarchar	1000	NULL	NULL	YES	(NULL)	
+11	MeasureUnit	bigint	NULL	19	0	YES	(NULL)	
+12	ImageAvailable	bit	NULL	NULL	NULL	NO	((0))	
+13	ImageData	varbinary	-1	NULL	NULL	YES	(NULL)	
+14	ImageContentType	nvarchar	40	NULL	NULL	YES	(NULL)	
+15	ImageFileName	nvarchar	100	NULL	NULL	YES	(NULL)	
+16	IsComposite	bit	NULL	NULL	NULL	NO	((0))	
+17	Template	bigint	NULL	19	0	YES	(NULL)	
+18	Supplier	bigint	NULL	19	0	YES	(NULL)	
+19	SupplierProductId	nvarchar	40	NULL	NULL	YES	(NULL)	
+20	CustomerProductId	nvarchar	40	NULL	NULL	YES	(NULL)	
+21	Active	bit	NULL	NULL	NULL	NO	((0))	
+22	WebVisible	bit	NULL	NULL	NULL	NO	((0))	
+23	PrimeCost	decimal	NULL	28	10	NO	((0.0))		
+
+ QUERY 2: doProduct Table Indexes
+-- ============================================================
+ 
+PK_doProduct	CLUSTERED	1	1	ID
+IX_Category	NONCLUSTERED	0	0	Category
+IX_MeasureUnit	NONCLUSTERED	0	0	MeasureUnit
+IX_Name	NONCLUSTERED	0	0	Name
+IX_ProductId	NONCLUSTERED	1	0	ProductId
+IX_Supplier	NONCLUSTERED	0	0	Supplier
+IX_Template	NONCLUSTERED	0	0	Template
+
+QUERY 3: doProduct Foreign Keys
+-- ============================================================
+
+FK_doProduct_Category	doProduct	Category	doCategory	ID	NO_ACTION	NO_ACTION
+FK_doProduct_ID	doProduct	ID	doCoreFtObject	ID	CASCADE	NO_ACTION
+FK_doProduct_MeasureUnit	doProduct	MeasureUnit	doMeasureUnit	ID	NO_ACTION	NO_ACTION
+FK_doProduct_Supplier	doProduct	Supplier	doContractor	ID	NO_ACTION	NO_ACTION
+FK_doProduct_Template	doProduct	Template	doStoreAssemblyTemplate	ID	NO_ACTION	NO_ACTION
+
+QUERY 4: doProduct-Prices Table Structure (CONFIRMED EXISTS)
+-- ============================================================
+
+ID	bigint	NULL	19	0	NO	NULL
+Product	bigint	NULL	19	0	NO	((0))
+PriceType	bigint	NULL	19	0	NO	((0))
+Price	decimal	NULL	28	10	NO	((0.0))
+Currency	bigint	NULL	19	0	NO	((0))
+
+-- Indexes on doProduct-Prices
+-- ============================================================
+
+IX_2	NONCLUSTERED	1	Product, PriceType
+IX_Product	NONCLUSTERED	1	Product, ID
+PK_doProduct-Prices	CLUSTERED	1	ID
+
+-- Foreign Keys on doProduct-Prices
+-- ============================================================
+
+FK_doProduct-Prices_Currency	Currency	doCurrency		ID	NO_ACTION
+FK_doProduct-Prices_PriceType	PriceType	doProductPriceType	ID	NO_ACTION
+FK_doProduct-Prices_Product	Product		doProduct		ID	NO_ACTION
+
+-- QUERY 5: doProduct-PrimeCostItems Table Structure
+-- ============================================================
+
+ID		bigint		NULL	19	0	NO
+Product		bigint		NULL	19	0	NO
+Quantity	decimal		NULL	28	10	NO
+Input		bigint		NULL	19	0	NO
+InputDate	smalldatetime	NULL	NULL	NULL	NO
+InputPrice	decimal		NULL	28	10	NO
+Output		bigint		NULL	19	0	YES
+OutputDate	smalldatetime	NULL	NULL	NULL	YES
+OutputPrice	decimal		NULL	28	10	YES
+
+-- QUERY 6: doProductPriceType and Junction Table
+-- ============================================================
+
+ID			bigint		NULL	19	0	NO
+Name			nvarchar	40	NULL	NULL	NO
+Description		nvarchar	300	NULL	NULL	YES
+Currency		bigint		NULL	19	0	NO
+AllowDifferentCurrency	bit		NULL	NULL	NULL	NO
+Active			bit		NULL	NULL	NULL	NO
+
+-- doProductPriceType-Stores junction table (many-to-many)
+-- ============================================================
+
+ID-1	bigint	NO
+ID-2	bigint	NO
+ 
+-- ============================================================
+-- QUERY 7: doCategory, doMeasureUnit, doStore Tables
+-- ============================================================
+-- doCategory
+1	doCategory	ID			bigint		NULL	NO
+2	doCategory	CategoryId		nvarchar	20	NO
+3	doCategory	Name			nvarchar	80	NO
+4	doCategory	Description		nvarchar	500	YES
+5	doCategory	AnnotationTitle		nvarchar	100	YES
+6	doCategory	AnnotationOneTitle	nvarchar	100	YES
+7	doCategory	AnnotationTwoTitle	nvarchar	100	YES
+8	doCategory	WebVisible		bit		NULL	NO
+
+-- doMeasureUnit
+doMeasureUnit	ID		bigint		NULL	NO
+doMeasureUnit	Name		nvarchar	10	NO
+doMeasureUnit	FullName	nvarchar	40	YES
+doMeasureUnit	Active		bit		NULL	NO
+
+-- doStore
+doStore	ID		bigint		NULL	NO
+doStore	Name		nvarchar	40	NO
+doStore	Description	nvarchar	100	YES
+doStore	Active		bit		NULL	NO
+doStore	IsInternal	bit		NULL	NO
+doStore	Address		bigint		NULL	YES
+doStore	IsInitiated	bit		NULL	NO
+doStore	UserInitiated	bigint		NULL	YES
+doStore	TimeInitiated	datetime	NULL	YES
+doStore	Identity	bigint		NULL	YES
+
+-- ============================================================
+-- QUERY 8: doStore Child Tables
+-- ============================================================
+doStore-InitiationItems		5
+doStore-InitiationLogItems	10
+doStore-Items			4
+doStore-LogItems		17
+doStore-RequestItems		5
+
+-- ============================================================
+-- QUERY 9: Sample Data Statistics
+-- ============================================================
+-- doProduct statistics
+doProduct	27747	118	204	27232	46
+
+-- doProduct-Prices statistics
+doProduct-Prices	53742	25999	7	0.0000000000	238330.0000000000	268.7984460031
+
+-- Other tables row counts (FIXED)
+doCategory		118
+doStore			31
+doMeasureUnit		6
+doProductPriceType	9
+doContractor		19955
+
+-- ============================================================
+-- QUERY 10: Check for Triggers
+-- ============================================================
+
+(0 row(s) affected)
+
+-- ============================================================
+-- BONUS: Check DataObjects.NET Structure Pattern
+-- ============================================================
+-- Check if there's a TypeId column (DataObjects.NET pattern for inheritance)
+
+ImageContentType	nvarchar
+ 

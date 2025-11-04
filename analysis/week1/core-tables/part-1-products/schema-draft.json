@@ -1,0 +1,629 @@
+{
+  "extraction_date": "2025-11-03",
+  "source": "C# DataObjects.NET Classes",
+  "completeness": "90%",
+  "notes": "Schema extracted from C# attributes. Some details require SQL validation (see validation-queries.sql)",
+  
+  "tables": {
+    "Products": {
+      "description": "Core product entity with pricing, categorization, and composite product support",
+      "columns": {
+        "ID": {
+          "type": "INT",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true,
+          "notes": "DataObjects.NET auto-generated primary key"
+        },
+        "CategoryID": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "Categories",
+            "references_column": "ID"
+          },
+          "indexed": true,
+          "notes": "Product category foreign key - [Indexed] attribute"
+        },
+        "ProductId": {
+          "type": "VARCHAR(80)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(80), Indexed(Unique=true)] - User-defined product identifier"
+        },
+        "Name": {
+          "type": "VARCHAR(80)",
+          "nullable": false,
+          "indexed": true,
+          "notes": "[Length(80), Indexed] - Product name for frequent searches"
+        },
+        "Annotation": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable]"
+        },
+        "AnnotationOne": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable] - Additional annotation field"
+        },
+        "AnnotationTwo": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable] - Additional annotation field"
+        },
+        "Description": {
+          "type": "VARCHAR(500)",
+          "nullable": true,
+          "notes": "[Length(500), Nullable]"
+        },
+        "DescriptionOne": {
+          "type": "VARCHAR(1000)",
+          "nullable": true,
+          "notes": "[Length(1000), Nullable, LoadOnDemand] - Large text, lazy loaded"
+        },
+        "DescriptionTwo": {
+          "type": "VARCHAR(1000)",
+          "nullable": true,
+          "notes": "[Length(1000), Nullable, LoadOnDemand] - Large text, lazy loaded"
+        },
+        "MeasureUnitID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "MeasureUnits",
+            "references_column": "ID"
+          },
+          "notes": "[Nullable] - Abstract property MeasureUnit becomes FK"
+        },
+        "ImageAvailable": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "0",
+          "notes": "Computed property - indicates if ImageData is not null"
+        },
+        "ImageData": {
+          "type": "IMAGE",
+          "nullable": true,
+          "notes": "[SqlType(SqlType.Image), Nullable, LoadOnDemand] - Binary image data"
+        },
+        "ImageContentType": {
+          "type": "VARCHAR(40)",
+          "nullable": true,
+          "notes": "[Length(40), Nullable, LoadOnDemand] - MIME type"
+        },
+        "ImageFileName": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable, LoadOnDemand]"
+        },
+        "IsComposite": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "0",
+          "notes": "Indicates if product has assembly template (composite product)"
+        },
+        "TemplateID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "StoreAssemblyTemplates",
+            "references_column": "ID"
+          },
+          "notes": "[Contained, Nullable] - Assembly template for composite products"
+        },
+        "SupplierID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "Contractors",
+            "references_column": "ID"
+          },
+          "notes": "[Nullable] - Default supplier"
+        },
+        "SupplierProductId": {
+          "type": "VARCHAR(40)",
+          "nullable": true,
+          "notes": "[Length(40), Nullable] - Supplier's product ID"
+        },
+        "CustomerProductId": {
+          "type": "VARCHAR(40)",
+          "nullable": true,
+          "notes": "[Length(40), Nullable] - Customer's product ID"
+        },
+        "Active": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Product activity status - requires special permission to change"
+        },
+        "WebVisible": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Web visibility flag"
+        },
+        "PrimeCost": {
+          "type": "DECIMAL(18,2)",
+          "nullable": false,
+          "default": "0",
+          "notes": "[Validator(typeof(GreaterThanEqual),0)] - Current calculated prime cost",
+          "sql_validation_needed": true
+        }
+      },
+      "indexes": [
+        {
+          "name": "IX_Products_Category",
+          "columns": ["CategoryID"],
+          "unique": false,
+          "notes": "From [Indexed] attribute on Category property"
+        },
+        {
+          "name": "UQ_Products_ProductId",
+          "columns": ["ProductId"],
+          "unique": true,
+          "notes": "From [Indexed(Unique=true)]"
+        },
+        {
+          "name": "IX_Products_Name",
+          "columns": ["Name"],
+          "unique": false,
+          "notes": "From [Indexed] - for frequent searches"
+        },
+        {
+          "name": "IX_Products_Prices_Composite",
+          "columns": ["ID", "?"],
+          "unique": true,
+          "notes": "From class-level [Index] - complex index on Prices collection",
+          "sql_validation_needed": true
+        },
+        {
+          "name": "IX_Products_PrimeCostItems_Input",
+          "columns": ["ID", "?", "?"],
+          "unique": false,
+          "notes": "From class-level [Index] on PrimeCostItems.InputDate",
+          "sql_validation_needed": true
+        },
+        {
+          "name": "IX_Products_PrimeCostItems_Output",
+          "columns": ["ID", "?", "?"],
+          "unique": false,
+          "notes": "From class-level [Index] on PrimeCostItems.OutputDate",
+          "sql_validation_needed": true
+        }
+      ],
+      "child_collections": [
+        {
+          "name": "Prices",
+          "type": "ProductPriceCollection",
+          "storage": "Value type collection in Products table or separate ProductPrices table",
+          "notes": "[ItemType(typeof(ProductPrice),OwnerField='Product')] - Requires SQL validation"
+        },
+        {
+          "name": "PrimeCostItems",
+          "type": "ProductPrimeCostItemCollection",
+          "storage": "Separate table",
+          "notes": "[ItemType(typeof(ProductPrimeCostItem),OwnerField='Product')]"
+        }
+      ],
+      "business_rules": [
+        "ProductId and Name cannot be null (DisallowNull validator)",
+        "PrimeCost must be >= 0 (GreaterThanEqual validator)",
+        "Setting Active=false requires ProductActivityChangePermission",
+        "Inactivating product is blocked if it exists in any store with quantity > 0",
+        "Composite products have associated StoreAssemblyTemplate",
+        "ProductId changes update Template.Name automatically"
+      ]
+    },
+    
+    "Categories": {
+      "description": "Product categorization hierarchy",
+      "columns": {
+        "ID": {
+          "type": "INT",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "CategoryId": {
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(20), Indexed(Unique=true)] - User-defined category ID"
+        },
+        "Name": {
+          "type": "VARCHAR(80)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(80), Indexed(Unique=true)]"
+        },
+        "Description": {
+          "type": "VARCHAR(500)",
+          "nullable": true,
+          "notes": "[Length(500), Nullable, LoadOnDemand]"
+        },
+        "AnnotationTitle": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable] - Custom label for Product.Annotation"
+        },
+        "AnnotationOneTitle": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable] - Custom label for Product.AnnotationOne"
+        },
+        "AnnotationTwoTitle": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable] - Custom label for Product.AnnotationTwo"
+        },
+        "WebVisible": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Web visibility flag"
+        }
+      },
+      "indexes": [
+        {
+          "name": "UQ_Categories_CategoryId",
+          "columns": ["CategoryId"],
+          "unique": true
+        },
+        {
+          "name": "UQ_Categories_Name",
+          "columns": ["Name"],
+          "unique": true
+        }
+      ],
+      "relationships": [
+        {
+          "type": "one-to-many",
+          "target_table": "Products",
+          "notes": "[Contained, ItemType(typeof(Product))] - Cascade delete"
+        }
+      ],
+      "business_rules": [
+        "Cannot delete category if it has products (CanRemove check)",
+        "Deleting category removes all product discounts for that category"
+      ]
+    },
+    
+    "MeasureUnits": {
+      "description": "Units of measurement (kg, pcs, liters, etc.)",
+      "columns": {
+        "ID": {
+          "type": "INT",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "Name": {
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(10), Indexed(Unique=true)] - Short name (e.g., 'kg', 'pcs')"
+        },
+        "FullName": {
+          "type": "VARCHAR(40)",
+          "nullable": true,
+          "notes": "[Length(40), Nullable] - Full descriptive name"
+        },
+        "Active": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Indicates if unit can be used in operations"
+        }
+      },
+      "indexes": [
+        {
+          "name": "UQ_MeasureUnits_Name",
+          "columns": ["Name"],
+          "unique": true
+        }
+      ]
+    },
+    
+    "ProductPriceTypes": {
+      "description": "Types of sale prices (Retail, Wholesale, VIP, etc.)",
+      "columns": {
+        "ID": {
+          "type": "INT",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "Name": {
+          "type": "VARCHAR(40)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(40), Indexed(Unique=true)]"
+        },
+        "Description": {
+          "type": "VARCHAR(300)",
+          "nullable": true,
+          "notes": "[Length(300), Nullable, LoadOnDemand]"
+        },
+        "CurrencyID": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "Currencies",
+            "references_column": "ID"
+          },
+          "notes": "[Validator(typeof(DisallowNull))] - Default currency for this price type"
+        },
+        "AllowDifferentCurrency": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "UI hint - allows prices in different currencies"
+        },
+        "Active": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Indicates if price type can be used"
+        }
+      },
+      "indexes": [
+        {
+          "name": "UQ_ProductPriceTypes_Name",
+          "columns": ["Name"],
+          "unique": true
+        }
+      ],
+      "relationships": [
+        {
+          "type": "many-to-many",
+          "target_table": "Stores",
+          "junction_table": "ProductPriceType_Store",
+          "notes": "[ItemType(typeof(Store))] [PairTo] - Price types applicable to specific stores"
+        }
+      ],
+      "business_rules": [
+        "Deleting price type removes all product prices of that type",
+        "Can copy prices between price types with various strategies (Full/Replace/Supplement)",
+        "Can change all prices by percentage",
+        "Can convert all prices to different currency"
+      ]
+    },
+    
+    "Stores": {
+      "description": "Physical or virtual warehouses/locations",
+      "columns": {
+        "ID": {
+          "type": "INT",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "Name": {
+          "type": "VARCHAR(40)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "notes": "[Length(40), Indexed(Unique=true)]"
+        },
+        "Description": {
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "notes": "[Length(100), Nullable, LoadOnDemand]"
+        },
+        "Active": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "1",
+          "notes": "Store can be used in operations"
+        },
+        "IsInternal": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "0",
+          "notes": "Store is for internal/limited use"
+        },
+        "AddressID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "Addresses",
+            "references_column": "ID"
+          },
+          "notes": "[Contained, Nullable] - Physical address"
+        },
+        "IsInitiated": {
+          "type": "BIT",
+          "nullable": false,
+          "default": "0",
+          "notes": "Store has been initialized with starting inventory"
+        },
+        "UserInitiatedID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "Users",
+            "references_column": "ID"
+          },
+          "notes": "User who initiated the store"
+        },
+        "TimeInitiated": {
+          "type": "DATETIME",
+          "nullable": true,
+          "notes": "System time when store was initiated"
+        },
+        "IdentityID": {
+          "type": "INT",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "CompanyIdentities",
+            "references_column": "ID"
+          },
+          "notes": "[Nullable] - Assigned company identity for documents"
+        }
+      },
+      "indexes": [
+        {
+          "name": "UQ_Stores_Name",
+          "columns": ["Name"],
+          "unique": true
+        },
+        {
+          "name": "IX_Stores_Items_Composite",
+          "columns": ["ID", "?"],
+          "unique": true,
+          "notes": "From [Index(new string[]{'Items.Value.Owner','Items.Value.Product'},Unique=true)]",
+          "sql_validation_needed": true
+        },
+        {
+          "name": "IX_Stores_LogItems_Composite",
+          "columns": ["ID", "?", "?"],
+          "unique": true,
+          "notes": "From [Index] on LogItems collection",
+          "sql_validation_needed": true
+        },
+        {
+          "name": "IX_Stores_InitiationItems_Composite",
+          "columns": ["ID", "?"],
+          "unique": true,
+          "notes": "From [Index] on InitiationItems collection",
+          "sql_validation_needed": true
+        },
+        {
+          "name": "IX_Stores_RequestItems_Composite",
+          "columns": ["ID", "?"],
+          "unique": true,
+          "notes": "From [Index] on RequestItems collection",
+          "sql_validation_needed": true
+        }
+      ],
+      "child_collections": [
+        {
+          "name": "Items",
+          "type": "StoreItemCollection",
+          "table": "StoreItems",
+          "notes": "[ItemType(typeof(StoreItem),OwnerField='Owner')] - Current inventory"
+        },
+        {
+          "name": "LogItems",
+          "type": "StoreLogItemCollection",
+          "table": "StoreLogItems",
+          "notes": "Inventory change history"
+        },
+        {
+          "name": "RequestItems",
+          "type": "StoreRequestItemCollection",
+          "table": "StoreRequestItems",
+          "notes": "Product replenishment requests"
+        },
+        {
+          "name": "InitiationItems",
+          "type": "StoreInitiationItemCollection",
+          "table": "StoreInitiationItems",
+          "notes": "Initial inventory quantities"
+        },
+        {
+          "name": "InitiationLogItems",
+          "type": "StoreInitiationLogItemCollection",
+          "table": "StoreInitiationLogItems",
+          "notes": "History of initial quantity changes"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "many-to-many",
+          "target_table": "ProductPriceTypes",
+          "notes": "Price types applicable to this store"
+        },
+        {
+          "type": "many-to-many",
+          "target_table": "CashDesks",
+          "notes": "Cash desks that can be used with this store"
+        }
+      ],
+      "business_rules": [
+        "Store must be initiated before inventory operations",
+        "Cannot delete store if it has inventory (Items) or logs",
+        "Setting initial quantity after initiation updates both Items and PrimeCost",
+        "AddQuantity/SubQuantity methods require IsInitiated=true",
+        "Active cash desks filtered by Active property"
+      ]
+    },
+    
+    "ProductPrices": {
+      "description": "Value type collection - prices stored inline or in separate table",
+      "notes": "REQUIRES SQL VALIDATION - DataObjects.NET value type collections can be stored inline (if small) or in separate table",
+      "storage_uncertain": true,
+      "possible_columns": {
+        "ProductID": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "Products",
+            "references_column": "ID"
+          }
+        },
+        "PriceTypeID": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "ProductPriceTypes",
+            "references_column": "ID"
+          }
+        },
+        "Price": {
+          "type": "DECIMAL(18,2)",
+          "nullable": false,
+          "notes": "Price per unit"
+        },
+        "CurrencyID": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "Currencies",
+            "references_column": "ID"
+          }
+        }
+      },
+      "struct_definition": "ProductPrice is a value type (struct) not entity",
+      "sql_validation_needed": true
+    }
+  },
+  
+  "validation_needed": {
+    "critical": [
+      "Verify exact DECIMAL precision for PrimeCost (guessed 18,2)",
+      "Determine if ProductPrices is separate table or inline storage",
+      "Extract actual column names for complex indexes (Prices, PrimeCostItems, Items, LogItems)",
+      "Verify foreign key cascade rules (ON DELETE CASCADE vs RESTRICT)",
+      "Check if there are computed columns we missed",
+      "Verify IMAGE vs VARBINARY(MAX) for ImageData column"
+    ],
+    "optional": [
+      "Get row counts for each table",
+      "Identify missing indexes not defined in C# attributes",
+      "Check for triggers on tables",
+      "Verify default constraints match C# code"
+    ]
+  },
+  
+  "dataobjects_net_patterns": {
+    "abstract_properties": "Become foreign keys (CategoryID, SupplierID, etc.)",
+    "length_attribute": "Maps to VARCHAR(N) or NVARCHAR(N)",
+    "nullable_attribute": "Maps to NULL constraint",
+    "indexed_attribute": "Creates non-clustered index",
+    "indexed_unique": "Creates unique constraint + index",
+    "validator_disallow_null": "Maps to NOT NULL + CHECK constraint",
+    "sql_type_attribute": "Overrides default type mapping (IMAGE, etc.)",
+    "load_on_demand": "Hint for lazy loading, no schema impact",
+    "contained_attribute": "Cascade delete relationship",
+    "item_type_attribute": "Defines collection child type",
+    "owner_field_attribute": "Specifies FK column in child table",
+    "pair_to_attribute": "Many-to-many relationship (creates junction table)"
+  }
+}

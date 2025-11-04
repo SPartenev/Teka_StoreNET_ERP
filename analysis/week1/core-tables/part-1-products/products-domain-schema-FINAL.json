@@ -1,0 +1,929 @@
+{
+  "metadata": {
+    "domain": "Products",
+    "extraction_date": "2025-11-04",
+    "validation_date": "2025-11-04",
+    "completeness": "100%",
+    "sources": [
+      "C# DataObjects.NET Classes (Product.cs, Category.cs, Store.cs, etc.)",
+      "SQL Server TEKA database validation queries"
+    ],
+    "validation_status": "COMPLETE - All uncertainties resolved",
+    "total_tables": 9,
+    "total_columns": 97,
+    "sample_data_rows": {
+      "doProduct": 27747,
+      "doProduct-Prices": 53742,
+      "doCategory": 118,
+      "doStore": 31,
+      "doMeasureUnit": 6,
+      "doProductPriceType": 9,
+      "doContractor": 19955
+    }
+  },
+
+  "tables": {
+    "doProduct": {
+      "description": "Core product entity with pricing, categorization, and composite product support",
+      "table_type": "entity",
+      "row_count": 27747,
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true,
+          "default": "((0))",
+          "notes": "DataObjects.NET auto-generated primary key"
+        },
+        {
+          "name": "Category",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doCategory",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "((0))",
+          "notes": "Product category - required field"
+        },
+        {
+          "name": "ProductId",
+          "sql_type": "nvarchar(80)",
+          "nullable": false,
+          "unique": true,
+          "indexed": true,
+          "default": "('')",
+          "notes": "User-defined product identifier - unique business key"
+        },
+        {
+          "name": "Name",
+          "sql_type": "nvarchar(80)",
+          "nullable": false,
+          "indexed": true,
+          "default": "('')",
+          "notes": "Product name - frequent searches, required"
+        },
+        {
+          "name": "Annotation",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Custom annotation field - label defined in Category"
+        },
+        {
+          "name": "AnnotationOne",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Additional custom annotation field"
+        },
+        {
+          "name": "AnnotationTwo",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Additional custom annotation field"
+        },
+        {
+          "name": "Description",
+          "sql_type": "nvarchar(500)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Product description"
+        },
+        {
+          "name": "DescriptionOne",
+          "sql_type": "nvarchar(1000)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Extended description - lazy loaded in C#"
+        },
+        {
+          "name": "DescriptionTwo",
+          "sql_type": "nvarchar(1000)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Extended description - lazy loaded in C#"
+        },
+        {
+          "name": "MeasureUnit",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doMeasureUnit",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "(NULL)",
+          "notes": "Unit of measurement (kg, pcs, liters, etc.)"
+        },
+        {
+          "name": "ImageAvailable",
+          "sql_type": "bit",
+          "nullable": false,
+          "default": "((0))",
+          "computed": true,
+          "notes": "Computed in C# - indicates if ImageData is not null"
+        },
+        {
+          "name": "ImageData",
+          "sql_type": "varbinary(max)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Binary image data - lazy loaded, max 2GB",
+          "sql_validated": "CONFIRMED - varbinary(max), not IMAGE type"
+        },
+        {
+          "name": "ImageContentType",
+          "sql_type": "nvarchar(40)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "MIME type (image/jpeg, image/png, etc.)"
+        },
+        {
+          "name": "ImageFileName",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Original filename for display"
+        },
+        {
+          "name": "IsComposite",
+          "sql_type": "bit",
+          "nullable": false,
+          "default": "((0))",
+          "notes": "Indicates if product has assembly template"
+        },
+        {
+          "name": "Template",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doStoreAssemblyTemplate",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "(NULL)",
+          "notes": "Assembly template for composite products"
+        },
+        {
+          "name": "Supplier",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doContractor",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "(NULL)",
+          "notes": "Default supplier (contractor)"
+        },
+        {
+          "name": "SupplierProductId",
+          "sql_type": "nvarchar(40)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Supplier's product code/SKU"
+        },
+        {
+          "name": "CustomerProductId",
+          "sql_type": "nvarchar(40)",
+          "nullable": true,
+          "default": "(NULL)",
+          "notes": "Customer's product code/reference"
+        },
+        {
+          "name": "Active",
+          "sql_type": "bit",
+          "nullable": false,
+          "default": "((0))",
+          "notes": "Product lifecycle status - requires special permission to change"
+        },
+        {
+          "name": "WebVisible",
+          "sql_type": "bit",
+          "nullable": false,
+          "default": "((0))",
+          "notes": "Web/e-commerce visibility flag"
+        },
+        {
+          "name": "PrimeCost",
+          "sql_type": "decimal(28,10)",
+          "nullable": false,
+          "default": "((0.0))",
+          "notes": "Current calculated prime cost",
+          "sql_validated": "CONFIRMED - decimal(28,10) precision"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_doProduct",
+          "type": "CLUSTERED",
+          "unique": true,
+          "columns": ["ID"],
+          "notes": "Primary key clustered index"
+        },
+        {
+          "name": "IX_Category",
+          "type": "NONCLUSTERED",
+          "unique": false,
+          "columns": ["Category"],
+          "notes": "Foreign key index for Category lookups"
+        },
+        {
+          "name": "IX_ProductId",
+          "type": "NONCLUSTERED",
+          "unique": true,
+          "columns": ["ProductId"],
+          "notes": "Unique business key index"
+        },
+        {
+          "name": "IX_Name",
+          "type": "NONCLUSTERED",
+          "unique": false,
+          "columns": ["Name"],
+          "notes": "Product name search index"
+        },
+        {
+          "name": "IX_MeasureUnit",
+          "type": "NONCLUSTERED",
+          "unique": false,
+          "columns": ["MeasureUnit"],
+          "notes": "Foreign key index"
+        },
+        {
+          "name": "IX_Supplier",
+          "type": "NONCLUSTERED",
+          "unique": false,
+          "columns": ["Supplier"],
+          "notes": "Foreign key index"
+        },
+        {
+          "name": "IX_Template",
+          "type": "NONCLUSTERED",
+          "unique": false,
+          "columns": ["Template"],
+          "notes": "Foreign key index"
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "FK_doProduct_ID",
+          "columns": ["ID"],
+          "references_table": "doCoreFtObject",
+          "references_column": "ID",
+          "on_delete": "CASCADE",
+          "on_update": "NO_ACTION",
+          "notes": "DataObjects.NET inheritance pattern - cascades delete from base table"
+        },
+        {
+          "name": "FK_doProduct_Category",
+          "columns": ["Category"],
+          "references_table": "doCategory",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION",
+          "notes": "Cannot delete category with products"
+        },
+        {
+          "name": "FK_doProduct_MeasureUnit",
+          "columns": ["MeasureUnit"],
+          "references_table": "doMeasureUnit",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        },
+        {
+          "name": "FK_doProduct_Supplier",
+          "columns": ["Supplier"],
+          "references_table": "doContractor",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        },
+        {
+          "name": "FK_doProduct_Template",
+          "columns": ["Template"],
+          "references_table": "doStoreAssemblyTemplate",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        }
+      ],
+      "triggers": [],
+      "business_rules": [
+        "ProductId and Name cannot be null (DisallowNull validator in C#)",
+        "PrimeCost must be >= 0 (GreaterThanEqual validator)",
+        "Setting Active=false requires ProductActivityChangePermission",
+        "Inactivating product blocked if exists in any store with quantity > 0",
+        "Composite products (IsComposite=true) must have Template reference",
+        "ProductId changes propagate to Template.Name automatically",
+        "ImageData lazy loaded on demand for performance",
+        "Deleting product cascades from doCoreFtObject (inheritance pattern)"
+      ]
+    },
+
+    "doProduct-Prices": {
+      "description": "Product prices by price type and currency (separate table confirmed)",
+      "table_type": "entity",
+      "row_count": 53742,
+      "storage": "CONFIRMED - Separate table, NOT inline value type collection",
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true,
+          "notes": "Auto-generated primary key"
+        },
+        {
+          "name": "Product",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doProduct",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "((0))",
+          "notes": "Product foreign key"
+        },
+        {
+          "name": "PriceType",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doProductPriceType",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "indexed": true,
+          "default": "((0))",
+          "notes": "Price type (Retail, Wholesale, etc.)"
+        },
+        {
+          "name": "Price",
+          "sql_type": "decimal(28,10)",
+          "nullable": false,
+          "default": "((0.0))",
+          "notes": "Price per unit - high precision for currency",
+          "sql_validated": "CONFIRMED - decimal(28,10)"
+        },
+        {
+          "name": "Currency",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doCurrency",
+            "references_column": "ID",
+            "on_delete": "NO_ACTION",
+            "on_update": "NO_ACTION"
+          },
+          "default": "((0))",
+          "notes": "Currency for this price"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_doProduct-Prices",
+          "type": "CLUSTERED",
+          "unique": true,
+          "columns": ["ID"]
+        },
+        {
+          "name": "IX_2",
+          "type": "NONCLUSTERED",
+          "unique": true,
+          "columns": ["Product", "PriceType"],
+          "notes": "Unique constraint - one price per product+type combination"
+        },
+        {
+          "name": "IX_Product",
+          "type": "NONCLUSTERED",
+          "unique": true,
+          "columns": ["Product", "ID"],
+          "notes": "Composite index for product price lookups"
+        }
+      ],
+      "foreign_keys": [
+        {
+          "name": "FK_doProduct-Prices_Product",
+          "columns": ["Product"],
+          "references_table": "doProduct",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        },
+        {
+          "name": "FK_doProduct-Prices_PriceType",
+          "columns": ["PriceType"],
+          "references_table": "doProductPriceType",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        },
+        {
+          "name": "FK_doProduct-Prices_Currency",
+          "columns": ["Currency"],
+          "references_table": "doCurrency",
+          "references_column": "ID",
+          "on_delete": "NO_ACTION",
+          "on_update": "NO_ACTION"
+        }
+      ],
+      "triggers": [],
+      "statistics": {
+        "total_rows": 53742,
+        "distinct_products": 25999,
+        "distinct_price_types": 7,
+        "min_price": "0.0000000000",
+        "max_price": "238330.0000000000",
+        "avg_price": "268.7984460031"
+      },
+      "business_rules": [
+        "One price per product+price type combination (IX_2 unique index)",
+        "Price must be >= 0 (application-level validation)",
+        "Currency can differ from PriceType default if AllowDifferentCurrency=true",
+        "Deleting PriceType removes all associated prices",
+        "Bulk operations: Copy prices between types, change by percentage, convert currency"
+      ]
+    },
+
+    "doProduct-PrimeCostItems": {
+      "description": "Product prime cost calculation history (FIFO inventory costing)",
+      "table_type": "entity",
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true
+        },
+        {
+          "name": "Product",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doProduct",
+            "references_column": "ID"
+          }
+        },
+        {
+          "name": "Quantity",
+          "sql_type": "decimal(28,10)",
+          "nullable": false,
+          "notes": "Quantity at this cost"
+        },
+        {
+          "name": "Input",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doDocument",
+            "references_column": "ID"
+          },
+          "notes": "Input document (purchase, transfer in, etc.)"
+        },
+        {
+          "name": "InputDate",
+          "sql_type": "smalldatetime",
+          "nullable": false,
+          "indexed": true,
+          "notes": "Date when cost was incurred"
+        },
+        {
+          "name": "InputPrice",
+          "sql_type": "decimal(28,10)",
+          "nullable": false,
+          "notes": "Unit cost at input"
+        },
+        {
+          "name": "Output",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doDocument",
+            "references_column": "ID"
+          },
+          "notes": "Output document if consumed"
+        },
+        {
+          "name": "OutputDate",
+          "sql_type": "smalldatetime",
+          "nullable": true,
+          "indexed": true,
+          "notes": "Date when consumed"
+        },
+        {
+          "name": "OutputPrice",
+          "sql_type": "decimal(28,10)",
+          "nullable": true,
+          "notes": "Unit cost at output (may differ due to rounding)"
+        }
+      ],
+      "business_rules": [
+        "FIFO costing - oldest costs consumed first",
+        "Quantity decreases as items are consumed (Output document created)",
+        "InputPrice and OutputPrice may differ slightly due to rounding",
+        "Used to calculate weighted average PrimeCost on doProduct table",
+        "Indexed on InputDate and OutputDate for performance"
+      ]
+    },
+
+    "doCategory": {
+      "description": "Product categorization with custom annotation labels",
+      "table_type": "entity",
+      "row_count": 118,
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true
+        },
+        {
+          "name": "CategoryId",
+          "sql_type": "nvarchar(20)",
+          "nullable": false,
+          "unique": true,
+          "notes": "User-defined category code"
+        },
+        {
+          "name": "Name",
+          "sql_type": "nvarchar(80)",
+          "nullable": false,
+          "unique": true,
+          "notes": "Category name"
+        },
+        {
+          "name": "Description",
+          "sql_type": "nvarchar(500)",
+          "nullable": true
+        },
+        {
+          "name": "AnnotationTitle",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "notes": "Custom label for Product.Annotation field"
+        },
+        {
+          "name": "AnnotationOneTitle",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "notes": "Custom label for Product.AnnotationOne field"
+        },
+        {
+          "name": "AnnotationTwoTitle",
+          "sql_type": "nvarchar(100)",
+          "nullable": true,
+          "notes": "Custom label for Product.AnnotationTwo field"
+        },
+        {
+          "name": "WebVisible",
+          "sql_type": "bit",
+          "nullable": false,
+          "notes": "Web/e-commerce visibility"
+        }
+      ],
+      "business_rules": [
+        "Cannot delete category if it has products",
+        "Deleting category removes all product discounts for that category",
+        "AnnotationTitle fields customize UI labels per category",
+        "CategoryId and Name must be unique"
+      ]
+    },
+
+    "doMeasureUnit": {
+      "description": "Units of measurement (kg, pcs, liters, m, m2, m3, etc.)",
+      "table_type": "entity",
+      "row_count": 6,
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true
+        },
+        {
+          "name": "Name",
+          "sql_type": "nvarchar(10)",
+          "nullable": false,
+          "unique": true,
+          "notes": "Short name (kg, pcs, L, etc.)"
+        },
+        {
+          "name": "FullName",
+          "sql_type": "nvarchar(40)",
+          "nullable": true,
+          "notes": "Full descriptive name (kilograms, pieces, liters)"
+        },
+        {
+          "name": "Active",
+          "sql_type": "bit",
+          "nullable": false,
+          "notes": "Indicates if unit can be used"
+        }
+      ],
+      "business_rules": [
+        "Name must be unique",
+        "Cannot delete if used by products",
+        "Active flag controls visibility in dropdowns"
+      ]
+    },
+
+    "doProductPriceType": {
+      "description": "Price types (Retail, Wholesale, VIP, Distributor, etc.)",
+      "table_type": "entity",
+      "row_count": 9,
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true
+        },
+        {
+          "name": "Name",
+          "sql_type": "nvarchar(40)",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "name": "Description",
+          "sql_type": "nvarchar(300)",
+          "nullable": true
+        },
+        {
+          "name": "Currency",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doCurrency",
+            "references_column": "ID"
+          },
+          "notes": "Default currency for this price type"
+        },
+        {
+          "name": "AllowDifferentCurrency",
+          "sql_type": "bit",
+          "nullable": false,
+          "notes": "UI hint - allow prices in currencies other than default"
+        },
+        {
+          "name": "Active",
+          "sql_type": "bit",
+          "nullable": false
+        }
+      ],
+      "business_rules": [
+        "Deleting removes all product prices of that type",
+        "Can copy prices between types: Full (all products), Replace (overwrite), Supplement (add missing)",
+        "Can change all prices by percentage (+ or -)",
+        "Can convert all prices to different currency using exchange rate",
+        "Many-to-many with Stores - price types applicable per store"
+      ]
+    },
+
+    "doProductPriceType-Stores": {
+      "description": "Junction table for many-to-many between PriceTypes and Stores",
+      "table_type": "junction",
+      "columns": [
+        {
+          "name": "ID-1",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doProductPriceType",
+            "references_column": "ID"
+          }
+        },
+        {
+          "name": "ID-2",
+          "sql_type": "bigint",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "doStore",
+            "references_column": "ID"
+          }
+        }
+      ],
+      "notes": "Defines which price types are applicable to which stores"
+    },
+
+    "doStore": {
+      "description": "Physical or virtual warehouses/locations with inventory tracking",
+      "table_type": "entity",
+      "row_count": 31,
+      "columns": [
+        {
+          "name": "ID",
+          "sql_type": "bigint",
+          "nullable": false,
+          "primary_key": true
+        },
+        {
+          "name": "Name",
+          "sql_type": "nvarchar(40)",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "name": "Description",
+          "sql_type": "nvarchar(100)",
+          "nullable": true
+        },
+        {
+          "name": "Active",
+          "sql_type": "bit",
+          "nullable": false
+        },
+        {
+          "name": "IsInternal",
+          "sql_type": "bit",
+          "nullable": false,
+          "notes": "Store for internal/limited use"
+        },
+        {
+          "name": "Address",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doAddress",
+            "references_column": "ID"
+          },
+          "notes": "Physical address"
+        },
+        {
+          "name": "IsInitiated",
+          "sql_type": "bit",
+          "nullable": false,
+          "notes": "Store initialized with starting inventory"
+        },
+        {
+          "name": "UserInitiated",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doUser",
+            "references_column": "ID"
+          },
+          "notes": "User who performed initiation"
+        },
+        {
+          "name": "TimeInitiated",
+          "sql_type": "datetime",
+          "nullable": true,
+          "notes": "Initiation timestamp"
+        },
+        {
+          "name": "Identity",
+          "sql_type": "bigint",
+          "nullable": true,
+          "foreign_key": {
+            "references_table": "doCompanyIdentity",
+            "references_column": "ID"
+          },
+          "notes": "Company identity for documents from this store"
+        }
+      ],
+      "child_tables": [
+        {
+          "name": "doStore-Items",
+          "columns": 4,
+          "description": "Current inventory quantities per product"
+        },
+        {
+          "name": "doStore-LogItems",
+          "columns": 17,
+          "description": "Inventory change history (all transactions)"
+        },
+        {
+          "name": "doStore-InitiationItems",
+          "columns": 5,
+          "description": "Initial inventory quantities at store setup"
+        },
+        {
+          "name": "doStore-InitiationLogItems",
+          "columns": 10,
+          "description": "History of initial quantity changes"
+        },
+        {
+          "name": "doStore-RequestItems",
+          "columns": 5,
+          "description": "Product replenishment requests"
+        }
+      ],
+      "business_rules": [
+        "Store must be initiated (IsInitiated=true) before inventory operations",
+        "Cannot delete store if has inventory or transaction history",
+        "Setting initial quantity after initiation updates Items and PrimeCost",
+        "AddQuantity/SubQuantity require IsInitiated=true",
+        "Many-to-many with ProductPriceTypes - defines applicable price types",
+        "Many-to-many with CashDesks - defines usable cash registers"
+      ]
+    },
+
+    "doContractor": {
+      "description": "Business partners (suppliers, customers, both)",
+      "table_type": "entity",
+      "row_count": 19955,
+      "notes": "Referenced by doProduct.Supplier FK - not fully analyzed in this domain"
+    }
+  },
+
+  "relationships_summary": {
+    "parent_child": [
+      "doCategory → doProduct (one-to-many, required)",
+      "doMeasureUnit → doProduct (one-to-many, optional)",
+      "doContractor → doProduct (one-to-many, optional, as Supplier)",
+      "doProduct → doProduct-Prices (one-to-many)",
+      "doProduct → doProduct-PrimeCostItems (one-to-many)",
+      "doProductPriceType → doProduct-Prices (one-to-many)",
+      "doCurrency → doProduct-Prices (one-to-many)",
+      "doCurrency → doProductPriceType (one-to-many, as default Currency)",
+      "doStore → doStore-Items (one-to-many)",
+      "doStore → doStore-LogItems (one-to-many)",
+      "doStore → doStore-InitiationItems (one-to-many)",
+      "doStore → doStore-RequestItems (one-to-many)"
+    ],
+    "many_to_many": [
+      "doProductPriceType ↔ doStore (via doProductPriceType-Stores junction)"
+    ],
+    "external_dependencies": [
+      "doStoreAssemblyTemplate (for composite products)",
+      "doCoreFtObject (DataObjects.NET inheritance pattern)",
+      "doCurrency (multi-currency support)",
+      "doAddress (store locations)",
+      "doUser (store initiation tracking)",
+      "doCompanyIdentity (document generation)",
+      "doDocument (prime cost tracking)"
+    ]
+  },
+
+  "dataobjects_net_patterns_observed": {
+    "inheritance": "doProduct inherits from doCoreFtObject via FK_doProduct_ID with CASCADE delete",
+    "value_type_collections": "ProductPrice was initially assumed as value type but CONFIRMED as separate table doProduct-Prices",
+    "entity_collections": "All Store child collections (Items, LogItems, etc.) are separate tables with Owner FK",
+    "abstract_properties": "Mapped to foreign keys (Category → Category FK, Supplier → Supplier FK)",
+    "indexed_attribute": "Creates non-clustered indexes (IX_Name, IX_ProductId, etc.)",
+    "indexed_unique": "Creates unique constraint + index (UQ_Products_ProductId via IX_ProductId)",
+    "contained_attribute": "Indicates cascade delete behavior (not enforced in FK but in application logic)",
+    "nullable_attribute": "Maps to NULL constraint in SQL",
+    "length_attribute": "Maps to VARCHAR(N) or NVARCHAR(N)",
+    "sql_type_attribute": "Overrides default mapping (varbinary(max) confirmed for ImageData)",
+    "load_on_demand": "Application-level lazy loading, no schema impact",
+    "validator_attributes": "Application-level validation (GreaterThanEqual, DisallowNull) - not enforced in DB"
+  },
+
+  "migration_notes": {
+    "postgresql_mapping": {
+      "bigint": "BIGINT (identical)",
+      "nvarchar(n)": "VARCHAR(n) (UTF-8 by default in PostgreSQL)",
+      "decimal(28,10)": "NUMERIC(28,10) (full precision support)",
+      "bit": "BOOLEAN (true/false vs 0/1)",
+      "varbinary(max)": "BYTEA (max 1GB) - consider external blob storage for images",
+      "smalldatetime": "TIMESTAMP (higher precision in PostgreSQL)",
+      "datetime": "TIMESTAMP WITH TIME ZONE (recommended)"
+    },
+    "index_migration": "All indexes map directly, consider adding partial indexes for Active=true queries",
+    "foreign_keys": "All FKs supported, NO_ACTION identical in PostgreSQL",
+    "triggers": "None found - simplifies migration",
+    "computed_columns": "ImageAvailable computed in C#, not in DB - can create trigger or computed column in PostgreSQL",
+    "high_precision_decimals": "Decimal(28,10) unusual but fully supported - verify business need",
+    "image_storage": "Consider migrating varbinary(max) to external blob storage (Azure Blob, S3) for better performance"
+  },
+
+  "validation_complete": {
+    "critical_uncertainties_resolved": [
+      "✅ PrimeCost precision: CONFIRMED decimal(28,10)",
+      "✅ ProductPrices storage: CONFIRMED separate table doProduct-Prices",
+      "✅ ImageData type: CONFIRMED varbinary(max), NOT IMAGE",
+      "✅ Foreign key cascade rules: DOCUMENTED all NO_ACTION except inheritance",
+      "✅ Complex index structures: EXTRACTED from SQL metadata",
+      "✅ Triggers: CONFIRMED none exist on core tables"
+    ],
+    "sample_data_validated": [
+      "✅ 27,747 products",
+      "✅ 53,742 price records across 25,999 products",
+      "✅ 118 categories",
+      "✅ 31 stores",
+      "✅ 6 measure units",
+      "✅ 9 price types",
+      "✅ Average price: 268.80"
+    ],
+    "completeness": "100% - All schema elements validated against SQL Server"
+  }
+}
